@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: agent-system
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/public_service
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    open-in-view : false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
