@@ -1,0 +1,96 @@
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #9ca3af;
+  --border: #e5e7eb;
+  --primary: #2563eb;
+  --danger: #dc2626;
+  font-family: 'Pretendard', 'Malgun Gothic', system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: var(--primary); text-decoration: none; }
+h2 { margin: 0; font-size: 1.3rem; }
+h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
+
+.header {
+  display: flex; align-items: center; gap: 2rem;
+  padding: 0 1.5rem; height: 56px;
+  background: #1e293b; color: #fff;
+}
+.logo { font-size: 1.05rem; margin: 0; }
+.nav a { color: #cbd5e1; margin-right: 1rem; }
+.nav a.active { color: #fff; font-weight: 600; }
+
+.main { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+.page-title { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.summary { margin-left: auto; color: #4b5563; }
+
+.filters { display: flex; gap: 0.4rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.filters button {
+  border: 1px solid var(--border); background: var(--surface);
+  padding: 0.35rem 0.9rem; border-radius: 999px; cursor: pointer;
+}
+.filters button.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.table th, .table td { padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+.table th { background: #f9fafb; color: #4b5563; font-weight: 600; }
+.table tr.clickable { cursor: pointer; }
+.table tr.clickable:hover { background: #eff6ff; }
+.title-cell { white-space: normal; }
+.title-cell .badge { margin-left: 0.4rem; }
+.empty { text-align: center; color: var(--muted); padding: 2rem; }
+
+.badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+.badge-RECEIVED { background: #e0e7ff; color: #3730a3; }
+.badge-ASSIGNED { background: #fef3c7; color: #92400e; }
+.badge-IN_PROGRESS { background: #dbeafe; color: #1d4ed8; }
+.badge-COMPLETED { background: #dcfce7; color: #166534; }
+.badge-REJECTED { background: #f3f4f6; color: #4b5563; }
+.badge-delayed { background: #fee2e2; color: var(--danger); }
+
+.muted { color: var(--muted); }
+.text-danger { color: var(--danger); }
+.message { color: #4b5563; }
+.message.error { color: var(--danger); background: #fef2f2; padding: 0.8rem 1rem; border-radius: 6px; }
+.back { display: inline-block; margin-bottom: 0.8rem; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem 1.4rem; margin-bottom: 1rem; }
+.card h3:first-child { margin-top: 0; }
+.info-grid { display: grid; grid-template-columns: 110px 1fr 110px 1fr; gap: 0.6rem 1rem; margin: 0; }
+.info-grid dt { color: #6b7280; }
+.info-grid dd { margin: 0; }
+.content { white-space: pre-wrap; line-height: 1.6; margin: 0; }
+
+.timeline { list-style: none; padding: 0; margin: 0; }
+.timeline li { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px dashed var(--border); flex-wrap: wrap; }
+.timeline li:last-child { border-bottom: none; }
+.timeline .time { color: #6b7280; font-size: 0.85rem; min-width: 130px; }
+.timeline .by { font-weight: 600; }
+.timeline .memo { color: #4b5563; }
+
+@media (max-width: 700px) {
+  .info-grid { grid-template-columns: 90px 1fr; }
+  .header { gap: 1rem; }
+}
+
+/* 상태 변경 패널 */
+.form-row { margin-bottom: 0.8rem; }
+.form-row label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; color: #374151; }
+.form-row select, .form-row input {
+  max-width: 420px; padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border); border-radius: 6px; font: inherit;
+}
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn { border: none; border-radius: 6px; padding: 0.5rem 1.1rem; font: inherit; font-weight: 600; cursor: pointer; color: #fff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--primary); }
+.btn-danger { background: var(--danger); }
+.message.success { color: #166534; background: #f0fdf4; padding: 0.8rem 1rem; border-radius: 6px; }
