@@ -21,4 +21,7 @@ public class ServiceType {
 
     @Column(name = "sla_days", nullable = false)
     private Integer slaDays;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean active;     // 비활성 업무 유형으로는 새 민원을 접수할 수 없음
 }
