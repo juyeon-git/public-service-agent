@@ -94,3 +94,32 @@ h3 { font-size: 1rem; margin: 1.2rem 0 0.6rem; }
 .btn-primary { background: var(--primary); }
 .btn-danger { background: var(--danger); }
 .message.success { color: #166534; background: #f0fdf4; padding: 0.8rem 1rem; border-radius: 6px; }
+
+/* 통계 대시보드 */
+.month-picker { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; color: #4b5563; }
+.month-picker input { padding: 0.35rem 0.5rem; border: 1px solid var(--border); border-radius: 6px; font: inherit; }
+
+.stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: 0.3rem; }
+.stat-label { color: #6b7280; font-size: 0.85rem; }
+.stat-value { font-size: 1.8rem; font-weight: 700; }
+.stat-value small { font-size: 0.9rem; font-weight: 500; margin-left: 0.15rem; color: #6b7280; }
+
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.chart-grid .card { margin-bottom: 1rem; }
+.bar-chart { list-style: none; padding: 0; margin: 0; }
+.bar-chart li { display: grid; grid-template-columns: 110px 1fr; grid-template-rows: auto auto; column-gap: 0.8rem; row-gap: 0.15rem; padding: 0.55rem 0; }
+.bar-label { grid-row: span 2; align-self: center; font-weight: 600; font-size: 0.9rem; }
+.bar-track { height: 14px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
+.bar { height: 100%; background: #93c5fd; border-radius: 4px; overflow: hidden; }
+.bar-delayed { height: 100%; background: var(--danger); }
+.bar-value { font-size: 0.82rem; color: #374151; }
+.legend { display: flex; gap: 1rem; margin-top: 0.6rem; font-size: 0.8rem; color: #6b7280; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.3rem; vertical-align: -1px; }
+.dot-delayed { background: var(--danger); }
+.dot-ok { background: #93c5fd; }
+
+@media (max-width: 900px) {
+  .stat-cards { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+}

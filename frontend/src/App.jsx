@@ -1,6 +1,7 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import ComplaintListPage from './pages/ComplaintListPage.jsx'
 import ComplaintDetailPage from './pages/ComplaintDetailPage.jsx'
+import StatisticsPage from './pages/StatisticsPage.jsx'
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
         <h1 className="logo">민원 업무지원 시스템</h1>
         <nav className="nav">
           <NavLink to="/complaints">민원 목록</NavLink>
+          <NavLink to="/statistics">통계</NavLink>
         </nav>
       </header>
 
@@ -18,6 +20,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/complaints" replace />} />
           <Route path="/complaints" element={<ComplaintListPage />} />
           <Route path="/complaints/:id" element={<ComplaintDetailPage />} />
+          <Route path="/statistics" element={<StatisticsPage />} />
           <Route path="*" element={<p className="message">없는 화면입니다.</p>} />
         </Routes>
       </main>
