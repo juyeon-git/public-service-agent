@@ -9,12 +9,31 @@ export class ApiError extends Error {
   }
 }
 
+// 세션이 만료돼 401이 오면 실행할 함수 (AuthProvider가 등록: 로그인 화면으로 보내기)
+let unauthorizedHandler = null
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler
+}
+
+function readCookie(name) {
+  const found = document.cookie.split('; ').find((row) => row.startsWith(`${name}=`))
+  return found ? decodeURIComponent(found.split('=')[1]) : null
+}
+
 export async function api(path, { method = 'GET', body } = {}) {
+  const headers = {}
+  if (body) headers['Content-Type'] = 'application/json'
+  // 데이터를 바꾸는 요청에는 CSRF 토큰을 헤더에 담아 보낸다 (서버가 준 XSRF-TOKEN 쿠키 값)
+  if (method !== 'GET') {
+    const csrfToken = readCookie('XSRF-TOKEN')
+    if (csrfToken) headers['X-XSRF-TOKEN'] = csrfToken
+  }
+
   let res
   try {
     res = await fetch(`/api${path}`, {
       method,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      headers,
       body: body ? JSON.stringify(body) : undefined,
     })
   } catch {
@@ -30,6 +49,9 @@ export async function api(path, { method = 'GET', body } = {}) {
   }
 
   if (!res.ok) {
+    if (res.status === 401 && !path.startsWith('/auth/')) {
+      unauthorizedHandler?.() // 로그인이 풀렸다 → 로그인 화면으로
+    }
     if (res.status >= 500 && !data) {
       throw new ApiError(res.status, 'SERVER_ERROR', '서버가 응답하지 않습니다. Spring Boot가 실행 중인지 확인하세요.')
     }

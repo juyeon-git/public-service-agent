@@ -1,8 +1,10 @@
 package com.publicservice.agent_system.complaint;
 
+import com.publicservice.agent_system.auth.LoginEmployee;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -45,7 +47,8 @@ public class ComplaintController {
     /** 민원 상태 변경 (배정, 처리중, 완료, 반려) */
     @PatchMapping("/{id}/status")
     public ComplaintResponse changeStatus(@PathVariable Long id,
-                                          @Valid @RequestBody ComplaintStatusChangeRequest request) {
-        return complaintService.changeStatus(id, request);
+                                          @Valid @RequestBody ComplaintStatusChangeRequest request,
+                                          @AuthenticationPrincipal LoginEmployee loginEmployee) {   // 세션의 로그인 사용자
+        return complaintService.changeStatus(id, request, loginEmployee);
     }
 }

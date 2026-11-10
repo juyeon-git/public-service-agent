@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 /**
  * 민원 상태 변경 요청.
- * employeeId: 변경하는 직원 (로그인 기능을 만들면 로그인한 사용자로 대체 예정)
+ * 변경하는 직원은 요청 본문으로 받지 않고 로그인 정보(세션)에서 꺼낸다 → 다른 사람인 척 할 수 없음
  * assigneeId: ASSIGNED(배정)일 때만 필요
  * memo: REJECTED(반려)일 때는 사유 필수
  */
@@ -13,9 +13,6 @@ public record ComplaintStatusChangeRequest(
 
         @NotNull(message = "변경할 상태는 필수입니다.")
         ComplaintStatus toStatus,
-
-        @NotNull(message = "변경하는 직원 번호는 필수입니다.")
-        Long employeeId,
 
         Long assigneeId,
 

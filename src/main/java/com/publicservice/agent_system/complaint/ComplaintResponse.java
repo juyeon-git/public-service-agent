@@ -11,6 +11,7 @@ public record ComplaintResponse(
         String applicantName,
         String serviceTypeName,
         String departmentName,
+        Long assigneeId,
         String assigneeName,
         LocalDateTime receivedAt,
         LocalDateTime dueAt,
@@ -27,6 +28,7 @@ public record ComplaintResponse(
                 c.getApplicant().getName(),
                 c.getServiceType().getName(),
                 c.getDepartment() == null ? null : c.getDepartment().getName(),   // 미배정이면 null
+                c.getAssignee() == null ? null : c.getAssignee().getId(),         // 미배정이면 null
                 c.getAssignee() == null ? null : c.getAssignee().getName(),       // 미배정이면 null
                 c.getReceivedAt(),
                 c.getDueAt(),

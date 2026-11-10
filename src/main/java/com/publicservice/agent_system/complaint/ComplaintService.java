@@ -2,10 +2,12 @@ package com.publicservice.agent_system.complaint;
 
 import com.publicservice.agent_system.applicant.Applicant;
 import com.publicservice.agent_system.applicant.ApplicantRepository;
+import com.publicservice.agent_system.auth.LoginEmployee;
 import com.publicservice.agent_system.employee.Employee;
 import com.publicservice.agent_system.employee.EmployeeRepository;
 import com.publicservice.agent_system.global.exception.BadRequestException;
 import com.publicservice.agent_system.global.exception.ConflictException;
+import com.publicservice.agent_system.global.exception.ForbiddenException;
 import com.publicservice.agent_system.global.exception.NotFoundException;
 import com.publicservice.agent_system.servicetype.ServiceType;
 import com.publicservice.agent_system.servicetype.ServiceTypeRepository;
@@ -80,9 +82,10 @@ public class ComplaintService {
     // ===================== 상태 변경 =====================
 
     @Transactional
-    public ComplaintResponse changeStatus(Long id, ComplaintStatusChangeRequest request) {
+    public ComplaintResponse changeStatus(Long id, ComplaintStatusChangeRequest request, LoginEmployee loginEmployee) {
         Complaint complaint = getComplaint(id);
-        Employee changedBy = getEmployee(request.employeeId());
+        checkPermission(complaint, request.toStatus(), loginEmployee);     // ① 누가 할 수 있나 (권한)
+        Employee changedBy = getEmployee(loginEmployee.getEmployeeId());
 
         ComplaintStatus fromStatus = complaint.getStatus();
         LocalDateTime now = LocalDateTime.now();
@@ -111,6 +114,27 @@ public class ComplaintService {
                 complaint, fromStatus, request.toStatus(), changedBy, now, request.memo()));
 
         return ComplaintResponse.from(complaint, now);
+    }
+
+    // ===================== 권한 =====================
+
+    /**
+     * 권한 규칙 (누가 할 수 있나). 상태 규칙(언제 할 수 있나)은 Complaint 엔티티가 검사한다.
+     * - 배정: 관리자만
+     * - 처리 시작 / 완료 / 반려: 관리자 또는 이 민원의 담당자 본인
+     */
+    private void checkPermission(Complaint complaint, ComplaintStatus toStatus, LoginEmployee loginEmployee) {
+        if (loginEmployee.isAdmin()) {
+            return;
+        }
+        if (toStatus == ComplaintStatus.ASSIGNED) {
+            throw new ForbiddenException("ADMIN_ONLY", "담당자 배정은 관리자만 할 수 있습니다.");
+        }
+        boolean isAssignee = complaint.getAssignee() != null
+                && complaint.getAssignee().getId().equals(loginEmployee.getEmployeeId());
+        if (!isAssignee) {
+            throw new ForbiddenException("NOT_ASSIGNEE", "본인에게 배정된 민원만 처리할 수 있습니다. id=" + complaint.getId());
+        }
     }
 
     // ===================== 내부 =====================

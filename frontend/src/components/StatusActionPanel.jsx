@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api.js'
+import { useAuth } from '../auth/AuthContext.jsx'
 
 // 현재 상태에서 누를 수 있는 버튼 (백엔드 Complaint 엔티티의 상태 전이 규칙과 같게 맞춤)
 // ※ 화면에서 버튼을 숨기는 것은 "편의"일 뿐이고, 최종 검사는 항상 백엔드가 한다.
@@ -12,25 +13,30 @@ const ACTIONS_BY_STATUS = {
 }
 
 export default function StatusActionPanel({ complaint, onChanged }) {
+  const { user } = useAuth()
+  const isAdmin = user.role === 'ADMIN'
+  const isMine = complaint.assigneeId === user.employeeId
+
   const [employees, setEmployees] = useState([])
-  const [actorId, setActorId] = useState('')       // 작업하는 직원 (로그인 기능 전 임시)
   const [assigneeId, setAssigneeId] = useState('')  // 배정할 담당자
   const [memo, setMemo] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
 
-  // 직원 목록은 처음 한 번만 불러온다
+  // 담당자 목록은 배정 권한이 있는 관리자만 불러온다
   useEffect(() => {
+    if (!isAdmin) return
     api('/employees')
-      .then((list) => {
-        setEmployees(list)
-        if (list.length > 0) setActorId(String(list[0].id))
-      })
+      .then(setEmployees)
       .catch((e) => setError(e.message))
-  }, [])
+  }, [isAdmin])
 
-  const actions = ACTIONS_BY_STATUS[complaint.status] ?? []
+  // 권한 규칙 (백엔드 ComplaintService.checkPermission과 같게)
+  //  - 배정: 관리자만 / 처리 시작·완료·반려: 관리자 또는 담당자 본인
+  const canDo = (toStatus) => (toStatus === 'ASSIGNED' ? isAdmin : isAdmin || isMine)
+  const statusActions = ACTIONS_BY_STATUS[complaint.status] ?? []
+  const actions = statusActions.filter(canDo)
 
   const labelOf = (toStatus) => ({
     ASSIGNED: complaint.status === 'ASSIGNED' ? '재배정' : '배정',
@@ -55,11 +61,11 @@ export default function StatusActionPanel({ complaint, onChanged }) {
 
     setSubmitting(true) // 처리 중에는 버튼을 막아 두 번 클릭(중복 요청)을 방지
     try {
+      // 작업자(누가 바꿨는지)는 보내지 않는다 → 서버가 로그인 세션에서 꺼낸다
       await api(`/complaints/${complaint.id}/status`, {
         method: 'PATCH',
         body: {
           toStatus,
-          employeeId: Number(actorId),
           assigneeId: toStatus === 'ASSIGNED' ? Number(assigneeId) : null,
           memo: memo.trim() || null,
         },
@@ -75,23 +81,16 @@ export default function StatusActionPanel({ complaint, onChanged }) {
     }
   }
 
+  let notice = null
+  if (statusActions.length === 0) notice = '처리가 끝난 민원이라 상태를 바꿀 수 없습니다.'
+  else if (actions.length === 0) notice = '본인에게 배정된 민원만 처리할 수 있습니다. (배정은 관리자만 가능)'
+
   return (
     <div className="card">
       <h3>상태 변경</h3>
 
-      <div className="form-row">
-        <label>
-          작업자 <span className="muted">(로그인 전 임시)</span>
-          <select value={actorId} onChange={(e) => setActorId(e.target.value)}>
-            {employees.map((emp) => (
-              <option key={emp.id} value={emp.id}>{emp.name} · {emp.departmentName}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      {actions.length === 0 ? (
-        <p className="muted">처리가 끝난 민원이라 상태를 바꿀 수 없습니다.</p>
+      {notice ? (
+        <p className="muted">{notice}</p>
       ) : (
         <>
           {actions.includes('ASSIGNED') && (
@@ -126,7 +125,7 @@ export default function StatusActionPanel({ complaint, onChanged }) {
               <button
                 key={toStatus}
                 className={`btn ${toStatus === 'REJECTED' ? 'btn-danger' : 'btn-primary'}`}
-                disabled={submitting || !actorId}
+                disabled={submitting}
                 onClick={() => submit(toStatus)}
               >
                 {labelOf(toStatus)}

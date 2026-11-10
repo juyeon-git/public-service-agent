@@ -15,13 +15,14 @@ INSERT INTO department (name) VALUES
                                   ('고객지원부');      -- 4
 
 -- 2. 직원 (password_hash는 로그인 기능 전까지 쓰는 임시값)
+-- 개발용 가상 계정. 비밀번호는 모두 pass1234! (BCrypt 해시로 저장)
 INSERT INTO employee (department_id, login_id, password_hash, name, role) VALUES
-                                                                              (1, 'kimcs',  'temp-hash', '김철수', 'STAFF'),   -- 1
-                                                                              (1, 'leeyh',  'temp-hash', '이영희', 'STAFF'),   -- 2
-                                                                              (2, 'parkms', 'temp-hash', '박민수', 'STAFF'),   -- 3
-                                                                              (3, 'jungde', 'temp-hash', '정다은', 'STAFF'),   -- 4
-                                                                              (4, 'choihw', 'temp-hash', '최현우', 'STAFF'),   -- 5
-                                                                              (4, 'admin',  'temp-hash', '윤관리', 'ADMIN');   -- 6
+                                                                              (1, 'kimcs',  '$2a$10$/Ww0.nVLoWhRYckPL2Db.uLnzykfled3E5SDSc.HpjC4/oIJ/ZnIi', '김철수', 'STAFF'),   -- 1
+                                                                              (1, 'leeyh',  '$2a$10$/Ww0.nVLoWhRYckPL2Db.uLnzykfled3E5SDSc.HpjC4/oIJ/ZnIi', '이영희', 'STAFF'),   -- 2
+                                                                              (2, 'parkms', '$2a$10$/Ww0.nVLoWhRYckPL2Db.uLnzykfled3E5SDSc.HpjC4/oIJ/ZnIi', '박민수', 'STAFF'),   -- 3
+                                                                              (3, 'jungde', '$2a$10$/Ww0.nVLoWhRYckPL2Db.uLnzykfled3E5SDSc.HpjC4/oIJ/ZnIi', '정다은', 'STAFF'),   -- 4
+                                                                              (4, 'choihw', '$2a$10$/Ww0.nVLoWhRYckPL2Db.uLnzykfled3E5SDSc.HpjC4/oIJ/ZnIi', '최현우', 'STAFF'),   -- 5
+                                                                              (4, 'admin',  '$2a$10$/Ww0.nVLoWhRYckPL2Db.uLnzykfled3E5SDSc.HpjC4/oIJ/ZnIi', '윤관리', 'ADMIN');   -- 6
 
 -- 3. 신청인
 INSERT INTO applicant (name, phone, email) VALUES
@@ -60,4 +61,4 @@ INSERT INTO complaint_status_history (complaint_id, from_status, to_status, chan
                                                                                                               (1, NULL,          'RECEIVED',    NULL, '2026-09-01 09:00', '온라인 접수'),
                                                                                                               (1, 'RECEIVED',    'ASSIGNED',    6,    '2026-09-02 10:00', '장학지원부 김철수 배정'),
                                                                                                               (1, 'ASSIGNED',    'IN_PROGRESS', 1,    '2026-09-03 09:00', NULL),
-                                                                                                              (1, 'IN_PROGRESS', 'COMPLETED',   1,    '2026-09-10 15:00', '장학금 지급 완료');
+                                                                                                              (1, 'IN_PROGRESS', 'COMPLETED',   1,    '2026-09-10 15:00', '장학금 지급 완료');

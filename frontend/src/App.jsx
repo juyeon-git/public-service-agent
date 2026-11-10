@@ -1,9 +1,16 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { useAuth } from './auth/AuthContext.jsx'
+import LoginPage from './pages/LoginPage.jsx'
 import ComplaintListPage from './pages/ComplaintListPage.jsx'
 import ComplaintDetailPage from './pages/ComplaintDetailPage.jsx'
 import StatisticsPage from './pages/StatisticsPage.jsx'
 
 export default function App() {
+  const { user, checking, logout } = useAuth()
+
+  if (checking) return <p className="message" style={{ padding: '2rem' }}>확인 중...</p>
+  if (!user) return <LoginPage />   // 로그인 전에는 어떤 화면도 보여주지 않는다
+
   return (
     <div className="layout">
       <header className="header">
@@ -12,6 +19,12 @@ export default function App() {
           <NavLink to="/complaints">민원 목록</NavLink>
           <NavLink to="/statistics">통계</NavLink>
         </nav>
+        <div className="user-box">
+          <span>
+            {user.name} <span className="role">{user.roleLabel} · {user.departmentName}</span>
+          </span>
+          <button className="btn-logout" onClick={logout}>로그아웃</button>
+        </div>
       </header>
 
       <main className="main">
